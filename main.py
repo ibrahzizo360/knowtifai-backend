@@ -20,6 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 @app.get("/transcript")
 def get_transcript(videoId: str):
