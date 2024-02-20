@@ -1,7 +1,6 @@
 from typing import Union
 
 from fastapi import FastAPI
-from pytube import YouTube
 from youtube_transcript_api import YouTubeTranscriptApi
 from fastapi.middleware.cors import CORSMiddleware
 
