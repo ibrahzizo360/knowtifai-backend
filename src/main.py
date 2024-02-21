@@ -1,8 +1,6 @@
-from typing import Union, List
-from fastapi import HTTPException
-from fastapi import FastAPI
-from youtube_transcript_api import YouTubeTranscriptApi,NoTranscriptAvailable
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from utils.transcript import extract_audio, get_transcript, client
 
 origins = [
     "http://localhost:3000",
@@ -24,12 +22,21 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/transcript")
-def get_transcript(videoId: str) -> dict:
+def get_transcript(video_url: str) -> dict:
     try:
-        response: List[dict] = YouTubeTranscriptApi.get_transcript(videoId)
-        return {"transcript": response}
-    except NoTranscriptAvailable:
-        raise HTTPException(status_code=404, detail="Transcript not available")
+        # audio_path = extract_audio(video_url)
+        # print(str(audio_path), "audio file")
+        audio_path = "audio/20240221135505.mp4"
+        audio_file = open(audio_path, "rb")
+        transcript = client.audio.transcriptions.create(
+            file=audio_file,
+            model="whisper-1",
+            response_format="verbose_json",
+            timestamp_granularities=["word"]
+        )
+        
+        return {"transcript": transcript}
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error")
+
