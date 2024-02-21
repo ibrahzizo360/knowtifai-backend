@@ -1,7 +1,7 @@
-from typing import Union
-
+from typing import Union, List
+from fastapi import HTTPException
 from fastapi import FastAPI
-from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api import YouTubeTranscriptApi,NoTranscriptAvailable
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
@@ -24,11 +24,11 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/transcript")
-def get_transcript(videoId: str):
+def get_transcript(videoId: str) -> dict:
     try:
-        response = YouTubeTranscriptApi.get_transcript(videoId)
-    except(Exception):
-        print(Exception)
-        response = "No transcript available"
-        
-    return {"transcript": response}
+        response: List[dict] = YouTubeTranscriptApi.get_transcript(videoId)
+        return {"transcript": response}
+    except NoTranscriptAvailable:
+        raise HTTPException(status_code=404, detail="Transcript not available")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Internal server error")
