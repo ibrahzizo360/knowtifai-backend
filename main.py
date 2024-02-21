@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
     "http://localhost:3000",
-    "http://localhost:8080",
+    "https://intellisenseai.vercel.app",
 ]
 
 app = FastAPI()
