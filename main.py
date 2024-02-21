@@ -31,4 +31,5 @@ def get_transcript(videoId: str) -> dict:
     except NoTranscriptAvailable:
         raise HTTPException(status_code=404, detail="Transcript not available")
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail="Internal server error")
