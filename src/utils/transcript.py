@@ -12,9 +12,9 @@ def extract_audio(url):
     yt_video = YouTube(url)
     streams = yt_video.streams.filter(only_audio=True).first()
     filename = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.mp4'
-    streams.download(output_path='audio/', filename=filename)
+    streams.download(output_path='tmp/', filename=filename)
     # audio_file_path = os.path.join('audio', filename)
-    audio_file_path = 'audio/' + filename
+    audio_file_path = 'tmp/' + filename
     return audio_file_path
 
 
