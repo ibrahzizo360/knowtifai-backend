@@ -22,7 +22,7 @@ def read_root():
     return {"Hello": "World"}
 
 @app.get("/transcript")
-def get_transcript(video_url: str) -> dict:
+async def get_transcript(video_url: str) -> dict:
     try:
         audio_path = extract_audio(video_url)
         audio_file = open(audio_path, "rb")
