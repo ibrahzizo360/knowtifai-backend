@@ -13,11 +13,9 @@ def extract_audio(url):
     streams = yt_video.streams.filter(only_audio=True).first()
     filename = datetime.datetime.now().strftime("%Y%m%d%H%M%S") + '.mp4'
     streams.download(output_path='audio/', filename=filename)
-    audio_file_path = os.path.join('audio', filename)
-    # audio_file_path = 'audio/' + filename
-    # Open the file and return the file object
-    audio_file = open(audio_file_path, 'rb')
-    return audio_file
+    # audio_file_path = os.path.join('audio', filename)
+    audio_file_path = 'audio/' + filename
+    return audio_file_path
 
 
 def get_transcript(audio_file): 

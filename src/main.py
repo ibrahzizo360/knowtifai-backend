@@ -24,9 +24,7 @@ def read_root():
 @app.get("/transcript")
 def get_transcript(video_url: str) -> dict:
     try:
-        # audio_path = extract_audio(video_url)
-        # print(str(audio_path), "audio file")
-        audio_path = "audio/20240221135505.mp4"
+        audio_path = extract_audio(video_url)
         audio_file = open(audio_path, "rb")
         transcript = client.audio.transcriptions.create(
             file=audio_file,
@@ -34,9 +32,7 @@ def get_transcript(video_url: str) -> dict:
             response_format="verbose_json",
             timestamp_granularities=["word"]
         )
-        
-        return {"transcript": transcript}
+        return {"response": transcript}
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error")
-
