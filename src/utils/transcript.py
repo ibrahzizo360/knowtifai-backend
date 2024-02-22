@@ -43,18 +43,10 @@ def extract_audio_upload_cloudinary(url: str, cloudinary_config: dict) -> str:
 
         # Generate a unique filename with timestamp
         filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}"
-        parent_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 
-        # Define the relative path to the tmp directory
-        output_path = os.path.join(parent_dir, 'tmp')
+        audio_stream.download(filename=filename, output_path='/tmp/')
 
-        # Check if the directory exists, if not, create it
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
-
-        audio_stream.download(filename=filename, output_path=output_path)
-
-        audio_file_path = os.path.join(output_path, filename)
+        audio_file_path = '/tmp/' + filename
 
     
         with open(audio_file_path, "rb") as temp_file_reader:
@@ -63,7 +55,6 @@ def extract_audio_upload_cloudinary(url: str, cloudinary_config: dict) -> str:
                 folder="audio", **cloudinary_config
             )
 
-        print("road to success")
         return response["secure_url"]
 
     except (pytube.exceptions.PytubeError, ValueError) as e:
