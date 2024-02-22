@@ -17,7 +17,6 @@ def extract_audio(url):
     audio_file_path = 'tmp/' + filename
     return audio_file_path
 
-
 def get_transcript(audio_file): 
     print(audio_file, "audio file2")
     transcript = client.audio.transcriptions.create(
