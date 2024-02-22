@@ -63,6 +63,7 @@ def extract_audio_upload_cloudinary(url: str, cloudinary_config: dict) -> str:
                 folder="audio", **cloudinary_config
             )
 
+        print("road to success")
         return response["secure_url"]
 
     except (pytube.exceptions.PytubeError, ValueError) as e:
