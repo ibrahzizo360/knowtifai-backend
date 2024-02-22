@@ -2,7 +2,6 @@
 fastapi==0.109.2
 python-dotenv==1.0.1
 uvicorn==0.27.1
-openai==0.10.5
 pytube==15.0.0
 openai==1.12.0
 
