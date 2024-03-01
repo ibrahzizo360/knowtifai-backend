@@ -14,10 +14,10 @@ def generate_answer(question, transcript_text):
         model="gpt-3.5-turbo",
         messages=[
             {f"role": "user", "content": context}
-        ]
+        ],
+        max_tokens=50,
     )
 
-    # Extract response from completion
-    response = completion.choices[0]
+    response = completion.choices[0].message["content"]
 
     return response
