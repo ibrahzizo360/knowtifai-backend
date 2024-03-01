@@ -49,7 +49,7 @@ async def get_transcript(video_url: str) -> dict:
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/chat")
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest) -> ChatResponse:
     try:
         response = generate_answer(request.question, request.transcript_text)
         return {"chat_completion": response}

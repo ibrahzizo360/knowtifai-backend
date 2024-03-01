@@ -18,6 +18,6 @@ def generate_answer(question, transcript_text):
         max_tokens=50,
     )
 
-    response = completion.choices[0].message["content"]
+    response = completion.choices[0].message.content
 
     return response
