@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 from datetime import datetime
 import os
+from mangum import Mangum
 
 origins = [
     "http://localhost:3000",
@@ -12,6 +13,8 @@ origins = [
 ]
 
 app = FastAPI()
+
+handler = Mangum(app)
 
 app.add_middleware(
     CORSMiddleware,
