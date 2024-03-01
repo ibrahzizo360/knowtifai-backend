@@ -18,6 +18,6 @@ def generate_answer(question, transcript_text):
     )
 
     # Extract response from completion
-    response = completion.choices[0].message.content
+    response = completion.choices[0]
 
     return response

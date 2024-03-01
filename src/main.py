@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from utils.transcript import get_transcript, client, extract_audio_upload_cloudinary, cloudinary_config
+from utils.transcript import client, extract_audio_upload_cloudinary, cloudinary_config
 import requests
-from io import BytesIO
 from datetime import datetime
 import os
-from mangum import Mangum
+from models.chat import ChatRequest, ChatResponse
+from utils.chat import generate_answer
 
 origins = [
     "http://localhost:3000",
@@ -13,8 +13,6 @@ origins = [
 ]
 
 app = FastAPI()
-
-handler = Mangum(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -49,3 +47,13 @@ async def get_transcript(video_url: str) -> dict:
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    try:
+        response = generate_answer(request.question, request.transcript_text)
+        return {"chat_completion": response}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Internal server error, failed to generate chat completion.")
+    

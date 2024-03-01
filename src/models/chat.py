@@ -5,4 +5,4 @@ class ChatRequest(BaseModel):
     transcript_text: str
 
 class ChatResponse(BaseModel):
-    chat_completion: str   
+    chat_completion: dict   
