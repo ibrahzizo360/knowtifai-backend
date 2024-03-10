@@ -6,3 +6,6 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     chat_completion: str   
+
+class SummaryRequest(BaseModel):
+    transcript_text: str   

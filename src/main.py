@@ -4,8 +4,8 @@ from utils.transcript import client, extract_audio_upload_cloudinary, cloudinary
 import requests
 from datetime import datetime
 import os
-from models.chat import ChatRequest, ChatResponse
-from utils.chat import generate_answer
+from models.chat import ChatRequest, ChatResponse, SummaryRequest
+from utils.chat import generate_answer,generate_summary
 
 origins = [
     "http://localhost:3000",
@@ -56,4 +56,14 @@ async def chat(request: ChatRequest) -> ChatResponse:
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate chat completion.")
+    
+    
+@app.post("/summary")
+async def get_summary(request: SummaryRequest):
+    try:
+        response = generate_summary(request.transcript_text)
+        return {"summary": response}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
     
