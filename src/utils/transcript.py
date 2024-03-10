@@ -58,6 +58,7 @@ def extract_audio_upload_cloudinary(url: str, cloudinary_config: dict) -> str:
         return response["secure_url"]
 
     except (pytube.exceptions.PytubeError, ValueError) as e:
+        print(e, "error")
         raise ValueError(f"Failed to extract audio from '{url}': {e}")
     except Exception as e:
         raise Exception(f"Error uploading audio to Cloudinary: {e}")

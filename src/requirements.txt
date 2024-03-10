@@ -1,10 +1,10 @@
-
-fastapi==0.109.2
+fastapi==0.104.1
+pydantic==2.4.2
 python-dotenv==1.0.1
 uvicorn==0.27.1
 pytube==15.0.0
 openai==1.12.0
-cloudinary
-requests
-gunicorn
+cloudinary==1.38.0
+requests==2.31.0
+mangum==0.17.0
 
