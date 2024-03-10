@@ -52,8 +52,8 @@ def generate_quiz(transcript_text):
     are clear, accurate, and relevant to the content of the transcript, covering a range of topics and concepts to provide a comprehensive
     assessment of the reader's knowledge. The quiz should include multiple-choice, true/false, and short answer questions, with a suitable
     number of questions for the length and complexity of the original text. Please also provide answer keys for the quiz at the end of everything, including
-    explanations and additional information where necessary. Please don't forget to leave a space under each question or section for clarity.
-    ###
+    explanations and additional information where necessary. After each question, add the text %new% to indicate the start of a new question.
+    
     transcription text: {transcript_text}"""
 
     completion = client.chat.completions.create(
@@ -61,7 +61,7 @@ def generate_quiz(transcript_text):
         messages=[
             {f"role": "user", "content": context}
         ],
-        max_tokens=500,
+        max_tokens=800,
     )
 
     response = completion.choices[0].message
