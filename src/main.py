@@ -5,7 +5,7 @@ import requests
 from datetime import datetime
 import os
 from models.chat import ChatRequest, ChatResponse, SummaryRequest
-from utils.chat import generate_answer,generate_summary
+from utils.chat import generate_answer,generate_summary,generate_quiz
 
 origins = [
     "http://localhost:3000",
@@ -49,7 +49,7 @@ async def get_transcript(video_url: str) -> dict:
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/chat")
-async def chat(request: ChatRequest) -> ChatResponse:
+async def chat(request: ChatRequest):
     try:
         response = generate_answer(request.question, request.transcript_text)
         return {"chat_completion": response}
@@ -57,7 +57,7 @@ async def chat(request: ChatRequest) -> ChatResponse:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate chat completion.")
     
-    
+
 @app.post("/summary")
 async def get_summary(request: SummaryRequest):
     try:
@@ -66,4 +66,15 @@ async def get_summary(request: SummaryRequest):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
+
+@app.post("/quiz")
+async def get_quiz(request: SummaryRequest):
+    try:
+        response = generate_quiz(request.transcript_text)
+        return {"quiz": response}
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
+
+
     

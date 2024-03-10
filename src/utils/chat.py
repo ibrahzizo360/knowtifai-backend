@@ -18,7 +18,7 @@ def generate_answer(question, transcript_text):
         max_tokens=200,
     )
 
-    response = completion.choices[0].message.content
+    response = completion.choices[0].message
 
     return response
 
@@ -41,6 +41,29 @@ def generate_summary(transcript_text):
         max_tokens=200,
     )
 
-    response = completion.choices[0].message.content
+    response = completion.choices[0].message
+
+    return response
+
+def generate_quiz(transcript_text):
+
+    context = f"""Can you generate a quiz based on the given transcript of a lecture video? The quiz should include a variety of questions
+    that test the reader's understanding of the main ideas and key details presented in the original text. Please ensure that the questions
+    are clear, accurate, and relevant to the content of the transcript, covering a range of topics and concepts to provide a comprehensive
+    assessment of the reader's knowledge. The quiz should include multiple-choice, true/false, and short answer questions, with a suitable
+    number of questions for the length and complexity of the original text. Please also provide answer keys for the quiz at the end of everything, including
+    explanations and additional information where necessary. Please don't forget to leave a space under each question or section for clarity.
+    ###
+    transcription text: {transcript_text}"""
+
+    completion = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {f"role": "user", "content": context}
+        ],
+        max_tokens=500,
+    )
+
+    response = completion.choices[0].message
 
     return response
