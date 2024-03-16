@@ -8,3 +8,19 @@ assistant = client.beta.assistants.create(
     You will be given a pdf so that you reference it to answer the questions the user throws at you.""",
     model = model
 )
+
+assistant_id = assistant.id
+print(assistant_id)
+
+thread = client.beta.threads.create(
+    messages = [
+        {
+            "role": "user",
+            "content": "Who are you?"
+        }
+    ]
+)
+
+thread_id = thread.id
+
+print(thread_id)
