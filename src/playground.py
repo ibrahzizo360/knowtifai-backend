@@ -43,7 +43,7 @@ class AssistantManager:
             )
 
         if AssistantManager.thread_id:
-            self.thread = self.client.beta.thread.retrieve(
+            self.thread = self.client.beta.threads.retrieve(
                 thread_id = AssistantManager.thread_id
             )
 
@@ -59,6 +59,22 @@ class AssistantManager:
         
     def create_thread(self):
         if not AssistantManager.thread_id:
-            self.thread = self.client.beta.threads.create(
-                
-            )
+            self.thread = self.client.beta.threads.create()
+            AssistantManager.thread_id = self.thread.id
+            print(f"ThreadId::::: {self.thread.id}")
+
+    def add_message_to_thread(self, role, content):
+        if self.thread:
+            self.client.beta.threads.messages.create(
+                thread_id = self.thread.id,
+                role = role,
+                content = content
+            )        
+
+    def run_assistant(self, instructions):
+        if self.thread and self.assistant:
+            self.run = self.client.beta.threads.runs.create(
+                thread_id = self.thread.id,
+                assistant_id = self.assistant.id,
+                instructions= instructions
+            )        
