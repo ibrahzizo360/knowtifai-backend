@@ -24,3 +24,11 @@ thread = client.beta.threads.create(
 thread_id = thread.id
 
 print(thread_id)
+
+
+class AssitantManager:
+    thread_id: None
+    assistant_id: None
+
+    def __init__(self) -> None:
+        pass
