@@ -1,80 +1,74 @@
 from utils.chat import client
-
+from datetime import time
+from typing import List
 model = 'gpt-3.5-turbo-16k'
 
-# assistant = client.beta.assistants.create(
-#     name = 'study_buddy',
-#     instructions = """You are an excellent study partner. You've helped tons of students understand everything they want to learn.
-#     You will be given a pdf so that you reference it to answer the questions the user throws at you.""",
-#     model = model
-# )
-
-# assistant_id = assistant.id
-# print(assistant_id)
-
-# thread = client.beta.threads.create(
-#     messages = [
-#         {
-#             "role": "user",
-#             "content": "Who are you?"
-#         }
-#     ]
-# )
-
-# thread_id = thread.id
-
-# print(thread_id)
-
-
 class AssistantManager:
-    thread_id: None
-    assistant_id: None
 
     def __init__(self, model: str = model, ) -> None:
         self.client = client
         self.assistant = None
-        self.thread = None
-        self.run = None
-        self.answer = None
+        self.thread = None         
+    
 
-        if AssistantManager.assistant_id:
-            self.assistant = self.client.beta.assistants.retrieve(
-                assistant_id = AssistantManager.assistant_id
-            )
 
-        if AssistantManager.thread_id:
-            self.thread = self.client.beta.threads.retrieve(
-                thread_id = AssistantManager.thread_id
-            )
+    def upload_file(self, filename: str) -> None:
+        """
+        Uploads a file to the OpenAI API and creates an assistant related to that file.
 
-    def create_assistant(self, name, instructions, tools):
-        if not self.assistant:
-            self.assistant = self.client.beta.assistants.create(
-                name = name,
-                instructions = instructions,
-                tools = tools
-            )
-            AssistantManager.assistant_id = self.assistant.id
-            print(f"AsistantID::: {self.assistant.id}")       
-        
-    def create_thread(self):
-        if not AssistantManager.thread_id:
-            self.thread = self.client.beta.threads.create()
-            AssistantManager.thread_id = self.thread.id
-            print(f"ThreadId::::: {self.thread.id}")
+        Args:
+            filename (str): The path to the file to be uploaded.
+        """
+        file = self.client.files.create(
+            file=open(filename, 'rb'),
+            purpose="assistants"
+        )
 
-    def add_message_to_thread(self, role, content):
-        if self.thread:
-            self.client.beta.threads.messages.create(
-                thread_id = self.thread.id,
-                role = role,
-                content = content
-            )        
+        assistant = self.client.beta.assistants.create(
+            name="PDF Helper",
+            instructions="You are my assistant who can answer questions from the given pdf",
+            tools=[{"type": "retrieval"}],
+            model=model,
+            file_ids=[file.id]
+        )
+        self.assistant = assistant    
 
-    def run_assistant(self, instructions):
-        if self.thread and self.assistant:
-            self.run = self.client.beta.threads.runs.create(
-                thread_id = self.thread.id,
-                assistant_id = self.assistant.id,
-                instructions= instructions
-            )        
+    def get_answers(self, question: str) -> List[str]:
+        """
+        Asks a question to the assistant and retrieves the answers.
+
+        Args:
+            question (str): The question to be asked to the assistant.
+
+        Returns:
+            List[str]: A list of answers from the assistant.
+
+        Raises:
+            ValueError: If the assistant has not been created yet.
+        """
+        if self.assistant is None:
+            raise ValueError("Assistant not created. Please upload a file first.")
+
+        thread = self.client.beta.threads.create()
+
+        self.client.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=question
+        )
+
+        run = self.client.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=self.assistant.id
+        )
+
+        while True:
+            run_status = self.client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+            time.sleep(5)
+            if run_status.status == 'completed':
+                messages = self.client.beta.threads.messages.list(thread_id=thread.id)
+                break
+            else:
+                time.sleep(2)
+
+        return [message.content[0].text.value for message in messages.data if message.role == "assistant"]    
