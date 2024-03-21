@@ -7,6 +7,8 @@ import os
 from models.chat import ChatRequest, ChatResponse, SummaryRequest
 from utils.chat import generate_answer,generate_summary,generate_quiz
 import tempfile
+from routers import chat
+
 
 origins = [
     "http://localhost:3000",
@@ -14,6 +16,7 @@ origins = [
 ]
 
 app = FastAPI()
+app.include_router(chat.router)
 
 app.add_middleware(
     CORSMiddleware,
