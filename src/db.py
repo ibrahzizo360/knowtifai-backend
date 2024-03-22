@@ -7,3 +7,4 @@ load_dotenv()
 client = AsyncIOMotorClient(os.getenv('MONGO_URL'))
 database = client["init_db"]
 users_collection = database["users"]
+files_collection = database["files"]

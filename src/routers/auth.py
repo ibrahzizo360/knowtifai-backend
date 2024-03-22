@@ -14,7 +14,7 @@ load_dotenv()
 
 router = APIRouter()
 
-@router.post("/token")
+@router.post("/login")
 async def login_for_access_token(user: AuthUser):
     user = await authenticate_user(user.email, user.password)
     if not user:

@@ -80,12 +80,4 @@ async def get_quiz(request: SummaryRequest):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
-
-
-@app.get("/get_answers/")
-async def get_answers(question: str):
-    try:
-        answers = assistant_manager.get_answers(question)
-        return {"answers": answers}
-    except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))    
+  
