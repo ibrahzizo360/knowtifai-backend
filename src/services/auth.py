@@ -41,8 +41,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> Optional[User
         token = token.dict()
         token = token['credentials']
         payload = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=['HS256'])
-        user = await users_collection.find_one({"username": payload.get('sub')})
-        print(user)
+        user = await users_collection.find_one({"email": payload.get('sub')})
         if user:
             return user
         else:
