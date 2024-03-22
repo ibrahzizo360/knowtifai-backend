@@ -6,6 +6,9 @@ from datetime import datetime
 import os
 from models.chat import ChatRequest, ChatResponse, SummaryRequest
 from utils.chat import generate_answer,generate_summary,generate_quiz
+import tempfile
+from routers import chat, auth
+
 
 origins = [
     "http://localhost:3000",
@@ -13,6 +16,8 @@ origins = [
 ]
 
 app = FastAPI()
+app.include_router(chat.router)
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -75,6 +80,4 @@ async def get_quiz(request: SummaryRequest):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
-
-
-    
+  
