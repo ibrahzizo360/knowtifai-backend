@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from utils.transcript import client, extract_audio_upload_cloudinary, cloudinary_config
 import requests
@@ -7,7 +7,7 @@ import os
 from models.chat import ChatRequest, ChatResponse, SummaryRequest
 from utils.chat import generate_answer,generate_summary,generate_quiz
 import tempfile
-from routers import chat
+from routers import chat, auth
 
 
 origins = [
@@ -17,6 +17,7 @@ origins = [
 
 app = FastAPI()
 app.include_router(chat.router)
+app.include_router(auth.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -81,12 +82,10 @@ async def get_quiz(request: SummaryRequest):
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
 
 
-@app.post("/upload")
-async def upload_file(file: UploadFile = File(...)):
-    with tempfile.TemporaryDirectory() as temp_dir:
-        file_path = os.path.join(temp_dir, file.filename)
-        contents = await file.read()
-        with open(file_path, "wb") as f:
-            f.write(contents)
-        print(f"This is the file name: {file.filename}")
-    return {"filename": file.filename}
+@app.get("/get_answers/")
+async def get_answers(question: str):
+    try:
+        answers = assistant_manager.get_answers(question)
+        return {"answers": answers}
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))    
