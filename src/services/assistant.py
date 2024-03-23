@@ -10,8 +10,6 @@ class AssistantManager:
         self.assistant = None
         self.thread = None         
     
-
-
     def upload_file(self, file_path: str):
         """
         Uploads a file to the OpenAI API and creates an assistant related to that file.
