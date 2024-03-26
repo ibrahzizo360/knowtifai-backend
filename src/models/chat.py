@@ -7,5 +7,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     chat_completion: str   
 
+class QuestionRequest(BaseModel):
+    question: str  
+
 class SummaryRequest(BaseModel):
     transcript_text: str   

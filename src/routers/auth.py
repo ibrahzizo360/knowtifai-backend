@@ -31,7 +31,7 @@ async def register_user(user: RegisterUser):
     
     try:
         hashed_password = pwd_context.hash(user.password)
-        user = {"username": user.username, "email": user.email, "hashed_password": hashed_password}
+        user = {"username": user.username, "email": user.email, "hashed_password": hashed_password,"assistant_id": '', "thread_id": ''}
         
         result = await users_collection.insert_one(user)
         inserted_id = str(result.inserted_id)
