@@ -10,6 +10,7 @@ from models.user import User, Token
 from jose import JWTError, jwt
 import os
 import tempfile
+from models.chat import QuestionRequest
 from services.auth import get_current_user
 
 router = APIRouter()
@@ -46,10 +47,10 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
         raise HTTPException(status_code=500, detail=f"Error uploading file: {str(e)}")
 
 
-@router.get("/get_answers")
-async def get_answers(question: str, current_user: User = Depends(get_current_user)):
+@router.post("/get_answers")
+async def get_answers(request: QuestionRequest , current_user: User = Depends(get_current_user)):
     try:
-        answers = assistant_manager.get_answers(question, current_user['assistant_id'], current_user['thread_id'])
-        return {"answers": answers}
+        answer = assistant_manager.get_answers(request.question, current_user['assistant_id'], current_user['thread_id'])
+        return {"answer": answer}
     except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))  
+        raise HTTPException(status_code=400, detail=str(ve))

@@ -35,7 +35,7 @@ class AssistantManager:
         run = self.client.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id=assistant.id,
-            instructions="Start by greeting the user and then proceed to give a brief overview of the uploaded document. It should not be more than 200 words. End by wishing the user the best in learning."
+            instructions="Start by greeting the user and then proceed to give a brief overview of the uploaded learning material or document. It should not be more than 60 words. End by wishing the user the best in learning."
         )
 
         while True:
@@ -90,4 +90,4 @@ class AssistantManager:
             else:
                 time.sleep(2)
 
-        return [message.content[0].text.value for message in messages.data if message.role == "assistant"]    
+        return [message.content[0] for message in messages.data if message.role == "assistant"]    
