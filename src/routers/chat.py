@@ -32,15 +32,14 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
             temp_file.write(await file.read())
 
         with open(temp_file_path, 'rb') as temp_file:
-            assistant_id = assistant_manager.upload_file(temp_file)
+            res = assistant_manager.upload_file(temp_file)
 
         # Perform necessary operations with the assistant ID
         await users_collection.update_one(
             {"username": current_user['username']},
-            {"$push": {"documents": file.filename}, "$set": {"assistant_id": assistant_id}}
+            {"$push": {"documents": file.filename}, "$set": {"assistant_id": res["assistant_id"], "thread_id": res["thread_id"]}}
         )
-
-        return {"assistant_id": assistant_id}
+        return res
 
     except Exception as e:
         print(e)
@@ -50,7 +49,7 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
 @router.get("/get_answers")
 async def get_answers(question: str, current_user: User = Depends(get_current_user)):
     try:
-        answers = assistant_manager.get_answers(question, current_user['assistant_id'])
+        answers = assistant_manager.get_answers(question, current_user['assistant_id'], current_user['thread_id'])
         return {"answers": answers}
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))  

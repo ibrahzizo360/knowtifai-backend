@@ -29,10 +29,33 @@ class AssistantManager:
             model=model,
             file_ids=[file.id]
         )
-        
-        return assistant.id
 
-    def get_answers(self, question: str, assistant_id: str) -> List[str]:
+        thread = self.client.beta.threads.create()
+
+        run = self.client.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=assistant.id,
+            instructions="Start by greeting the user and then proceed to give a brief overview of the uploaded document. It should not be more than 200 words. End by wishing the user the best in learning."
+        )
+
+        while True:
+            run_status = self.client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+            time.sleep(5)
+            if run_status.status == 'completed':
+                messages = self.client.beta.threads.messages.list(thread_id=thread.id)
+                break
+            else:
+                time.sleep(2)
+
+        message = [message.content[0] for message in messages.data if message.role == "assistant"]
+        
+        return {
+            "assistant_id": assistant.id,
+            "thread_id": thread.id,
+            "message": message,
+        }
+
+    def get_answers(self, question: str, assistant_id: str, thread_id: str) -> List[str]:
         """
         Asks a question to the assistant and retrieves the answers.
 
@@ -45,24 +68,24 @@ class AssistantManager:
         Raises:
             ValueError: If the assistant has not been created yet.
         """
-        thread = self.client.beta.threads.create()
+        
 
         self.client.beta.threads.messages.create(
-            thread_id=thread.id,
+            thread_id=thread_id,
             role="user",
             content=question
         )
 
         run = self.client.beta.threads.runs.create(
-            thread_id=thread.id,
+            thread_id=thread_id,
             assistant_id=assistant_id
         )
 
         while True:
-            run_status = self.client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+            run_status = self.client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run.id)
             time.sleep(5)
             if run_status.status == 'completed':
-                messages = self.client.beta.threads.messages.list(thread_id=thread.id)
+                messages = self.client.beta.threads.messages.list(thread_id=thread_id)
                 break
             else:
                 time.sleep(2)
