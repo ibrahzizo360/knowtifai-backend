@@ -28,16 +28,18 @@ async def login_for_access_token(user: AuthUser):
 
 @router.post("/register")
 async def register_user(user: RegisterUser):
-    
-    try:
+
+        existing_user = await get_user(user.email)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
         hashed_password = pwd_context.hash(user.password)
         user = {"username": user.username, "email": user.email, "hashed_password": hashed_password,"assistant_id": '', "thread_id": ''}
         
         result = await users_collection.insert_one(user)
         inserted_id = str(result.inserted_id)
         return {"user_id": inserted_id}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating user: {str(e)}")
+
 
 async def authenticate_user(email: str, password: str):
     user = await get_user(email)
