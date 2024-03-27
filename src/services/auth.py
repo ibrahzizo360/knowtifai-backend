@@ -48,3 +48,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> Optional[User
             raise HTTPException(status_code=401, detail="Invalid token")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+
+async def authenticate_user(email: str, password: str):
+    user = await get_user(email)
+    if not user:
+        return False
+    if not verify_password(password, user['hashed_password']):
+        return False
+    return user    

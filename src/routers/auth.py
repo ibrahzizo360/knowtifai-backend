@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from models.user import User, UserInDB, AuthUser, RegisterUser
-from services.auth import verify_password, get_user, create_access_token, pwd_context
+from services.auth import verify_password, get_user, create_access_token, pwd_context, authenticate_user, get_current_user
 
 load_dotenv()
 
@@ -41,10 +41,9 @@ async def register_user(user: RegisterUser):
         return {"user_id": inserted_id}
 
 
-async def authenticate_user(email: str, password: str):
-    user = await get_user(email)
-    if not user:
-        return False
-    if not verify_password(password, user['hashed_password']):
-        return False
-    return user    
+@router.get("/me")
+async def read_current_user(current_user: User = Depends(get_current_user)):
+    """
+    Retrieve information about the currently authenticated user.
+    """
+    return {"username": current_user["username"]}
