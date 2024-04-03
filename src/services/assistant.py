@@ -24,7 +24,15 @@ class AssistantManager:
 
         assistant = self.client.beta.assistants.create(
             name="PDF Helper",
-            instructions="You are my assistant who can answer questions from the given pdf",
+            instructions="""You are a helpful study assistant who knows a lot about understanding research papers.
+                Your role is to summarize papers, clarify terminology within context, and extract key figures and data.
+                Analyze the papers, noting strengths and limitations.
+                Respond to queries effectively, incorporating feedback to enhance your accuracy.
+                Handle data securely and update your knowledge base with the latest research.
+                Adhere to ethical standards, respect intellectual property, and provide users with guidance on any limitations.
+                Maintain a feedback loop for continuous improvement and user support.
+                Your ultimate goal is to facilitate a deeper understanding of complex scientific material, making it more accessible and comprehensible.
+                """,
             tools=[{"type": "retrieval"}],
             model=model,
             file_ids=[file.id]
@@ -35,7 +43,9 @@ class AssistantManager:
         run = self.client.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id=assistant.id,
-            instructions="Start by greeting the user and then proceed to give a brief overview of the uploaded learning material or document. It should not be more than 60 words. End by wishing the user the best in learning."
+            instructions="""Start by greeting the user and then proceed to give a brief overview of the uploaded learning material or document. 
+                        It should not be more than 60 words. End by wishing the user the best in learning.
+                        """
         )
 
         while True:
@@ -73,12 +83,23 @@ class AssistantManager:
         self.client.beta.threads.messages.create(
             thread_id=thread_id,
             role="user",
-            content=question
+            content=f"""Question: {question}
+            The probability of you generating a page reference is 1/3. 
+            After each question, please provide a page reference in the format %1%, where '1' denotes a page number.
+            For multiple page references, use the format %1%-%2%-%3%.
+            Here's an example of how it should be:
+            user: What was the total revenue for fiscal year 2023?
+            assistant: The total revenue for fiscal year 2023 was $X million. Page Reference: %5%
+            """
         )
 
         run = self.client.beta.threads.runs.create(
             thread_id=thread_id,
-            assistant_id=assistant_id
+            assistant_id=assistant_id,
+            instructions="""The probability of you generating a page reference is 1/3. 
+            When generating page references it should follow this format: %1% where 1 is a page number. Multiple page references 
+            should look this %1%-%2%-%3%.
+            """
         )
 
         while True:
@@ -91,3 +112,5 @@ class AssistantManager:
                 time.sleep(2)
 
         return [message.content[0] for message in messages.data if message.role == "assistant"]    
+
+

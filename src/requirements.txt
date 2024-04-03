@@ -41,3 +41,7 @@ watchfiles==0.21.0
 websockets==12.0
 whisper==1.1.10
 youtube-transcript-api==0.6.2
+pypdf
+langchain_community
+langchain-text-splitters
+langchain-openai
