@@ -11,8 +11,8 @@ load_dotenv()
 
 cloudinary_config = {
         "cloud_name" : "zizo-dev", 
-  "api_key" :"898186636739338", 
-  "api_secret" : os.getenv('CLOUDINARY_API_SECRET'), 
+        "api_key" :"898186636739338", 
+        "api_secret" : os.getenv('CLOUDINARY_API_SECRET'), 
     }
 
 
