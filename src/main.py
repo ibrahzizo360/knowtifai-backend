@@ -13,6 +13,7 @@ from routers import chat, auth
 origins = [
     "http://localhost:3000",
     "https://intellisenseai.vercel.app",
+    "https://knowtifai.vercel.app"
 ]
 
 app = FastAPI()

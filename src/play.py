@@ -14,7 +14,7 @@ pages = loader.load_and_split()
 # Create Vector Store and Retrieval System
 embeddings = OpenAIEmbeddings()
 db = FAISS.from_documents(pages, OpenAIEmbeddings())
-db = db.as_retriever()
+db = db.as_retriever(search_kwargs={"k": 3})
 
 # Define Prompt Templates and Chains
 document_prompt = PromptTemplate(input_variables=["page_content"], template="{page_content}")
@@ -29,8 +29,13 @@ doc_chain = StuffDocumentsChain(
     document_variable_name=document_variable_name
 )
 
+
+
 # Modify the template to include page reference
-template = "Combine the chat history and follow up question into a standalone question. Chat History: {chat_history} Follow up question: {question}"
+template = """Combine the chat history and follow up question into a standalone question and answer the question at the end. 
+If you don't know the answer, just say that you don't know, 
+don't try to make up an answer. Chat History: {chat_history} Follow up question: {question}
+"""
 prompt = PromptTemplate.from_template(template)
 
 question_generator_chain = LLMChain(llm=OpenAI(), prompt=prompt)
@@ -46,10 +51,11 @@ chain = ConversationalRetrievalChain(
     question_generator=question_generator_chain,
     return_source_documents=True,
     memory=memory,
+    response_if_no_docs_found="Sorry can't find anything on that topic"
 )
 
 
-question = "What's my name?"
+question = "Hello?"
 
 # Invoke the chain with the input data
 response = chain.invoke({"question": question})
