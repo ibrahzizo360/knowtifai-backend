@@ -1,23 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
-from pydantic import BaseModel
 from services.assistant import AssistantManager
 from db import users_collection, files_collection
-from bson import ObjectId
 from bson.binary import Binary
 from datetime import datetime
-from typing import Optional
-from models.user import User, Token
-from jose import JWTError, jwt
-import tempfile
+from models.user import User
 from models.chat import QuestionRequest
 from services.auth import get_current_user
-from services.chat import load_docs, create_vector_store, create_chain, generate_session_id
+from services.chat import load_docs, create_vector_store, create_chain, generate_session_id, streamer_queue
 from langchain_core.messages import HumanMessage, AIMessage
 from bson import json_util 
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
+from fastapi.responses import StreamingResponse
+from services.callbacks import ChainHandler    
+import asyncio
 import os
+import asyncio
+from threading import Thread
+from queue import Queue
+from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -83,7 +86,7 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
         chat_history = []
         
         res = chain.invoke({
-            "input": """Greet the user and then proceed to give a brief overview of the uploaded learning material or document. 
+            "question": """Greet the user and then proceed to give a brief overview of the uploaded learning material or document. 
                         It should not be more than 60 words. End by wishing the user the best in learning.""",
                         
             "chat_history": chat_history,
@@ -107,11 +110,10 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
     #     print(e)
     #     raise HTTPException(status_code=500, detail=f"Error uploading file: {str(e)}")    
     
-    
+
     
 @router.post("/v1/get_answers")
 async def get_answers(request: QuestionRequest , current_user: User = Depends(get_current_user)):
-    
     
     db = MongoDBAtlasVectorSearch.from_connection_string(
     os.getenv('MONGO_URL'),
@@ -123,12 +125,10 @@ async def get_answers(request: QuestionRequest , current_user: User = Depends(ge
     chain = create_chain(db)
     
     chat_history = current_user['chat_history']
-    
-    
-    print('chat_history', chat_history)
+    chat_history = []
     
     res = chain.invoke({
-        "input": request.question,
+        "question": request.question,
         "chat_history": chat_history,
     })
     
@@ -141,10 +141,70 @@ async def get_answers(request: QuestionRequest , current_user: User = Depends(ge
     user_res_json = json_util.loads(user_res.json())
     user_res_json['role'] = 'user'
     
-    # Perform necessary operations with the assistant ID
+
     await users_collection.update_one(
         {"username": current_user['username']},
         {"$push": {"chat_history": {"$each": [user_res_json, assistant_res_json]}}}
     )
     
-    return res['answer']
+    doc = res['source_documents'][0].to_json()['kwargs']
+    source_text = doc['page_content']
+    page = doc['metadata']['page']
+    
+    print(page, source_text)
+    
+    return {
+        "answer": res['answer'],
+        "page": page,
+        "source_text": source_text
+    }
+
+
+
+
+@router.post("/v2/get_answers")
+async def get_answers(request: QuestionRequest):
+    
+    db = MongoDBAtlasVectorSearch.from_connection_string(
+    os.getenv('MONGO_URL'),
+    'embeddings.embeddings',
+    OpenAIEmbeddings(disallowed_special=()),
+    index_name='vector_index',
+    )
+    
+    chain = create_chain(db)
+    chat_history = []
+    
+    chain_handler = ChainHandler()
+    
+    def generate(question):
+        chain.invoke({"question": question, "chat_history": []})
+
+
+    def start_generation(question):
+        # Creating a thread with generate function as a target
+        thread = Thread(target=generate, kwargs={"question": question})
+        # Starting the thread
+        thread.start()
+        
+    async def response_generator(query):
+        start_generation(query)
+
+        # Starting an infinite loop
+        while True:
+            # Obtain the value from the streamer queue
+            value = streamer_queue.get()
+            # Check for the stop signal, which is None in our case
+            if value == None:
+                # If stop signal is found break the loop
+                break
+            # Else yield the value
+            yield value
+            # statement to signal the queue that task is done
+            streamer_queue.task_done()
+
+            await asyncio.sleep(0.1)
+    
+    
+    return StreamingResponse(response_generator(request.question), media_type='text/event-stream')
+

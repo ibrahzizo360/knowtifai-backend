@@ -5,20 +5,25 @@ from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores.faiss import FAISS
-from langchain.chains import create_retrieval_chain
+from langchain.chains import create_retrieval_chain,RetrievalQAWithSourcesChain,ConversationalRetrievalChain
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.messages import HumanMessage, AIMessage
 from langchain.chains.history_aware_retriever import create_history_aware_retriever
 import uuid
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
+from langchain.callbacks import AsyncIteratorCallbackHandler
+from services.callbacks import MyCustomHandler   
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from db import embeddings_collection, MONGODB_COLLECTION, ATLAS_VECTOR_SEARCH_INDEX_NAME
+from queue import Queue
+
+streamer_queue = Queue()
 
 def generate_session_id():
     """
     Generate a random session ID using UUID (Universally Unique Identifier).
     """
     return str(uuid.uuid4())
-
 
 def load_docs(file_path):
     # Load PDF Documents
@@ -45,27 +50,21 @@ def create_chain(vectorStore):
         temperature=0.4,
         model='gpt-3.5-turbo-1106'
     )
-
-    prompt = ChatPromptTemplate.from_template("""
-    Answer the user's question.If you don't know the answer, just say that you don't know, 
-    don't try to make up an answer.
-    Context: {context}
-    Question: {input}
-    """)
     
     prompt = ChatPromptTemplate.from_messages([
-        ("system", "Answer the user's questions based on the context: {context}. If you don't know the answer, just say that you don't know, don't try to make up an answer."),
+        ("system", """Answer the user's questions based on the context: {context}. Provide citations and page references and
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
         MessagesPlaceholder(variable_name="chat_history"),
         ("user", "{input}")
     ])
 
-    # chain = prompt | model
     document_chain = create_stuff_documents_chain(
         llm=model,
         prompt=prompt
     )
 
-    retriever = vectorStore.as_retriever(search_kwargs={"k": 3})
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 6})
     
     retriever_prompt = ChatPromptTemplate.from_messages([
         MessagesPlaceholder(variable_name="chat_history"),
@@ -79,5 +78,28 @@ def create_chain(vectorStore):
     )
 
     retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+    
+    llm = ChatOpenAI(temperature=0.3, 
+                max_retries=3,
+                 callbacks=[AsyncIteratorCallbackHandler()],
+                 streaming=True)
+    
+    my_handler = MyCustomHandler(streamer_queue)
+    
+    streaming_llm = ChatOpenAI(
+            max_retries=15,
+            temperature=0.3,
+            callbacks=[my_handler],
+            streaming=True,
+        )
+    
+    
+    chain = ConversationalRetrievalChain.from_llm(llm=streaming_llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True,)
 
-    return retrieval_chain
+    return chain
+
+
+
+

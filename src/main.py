@@ -82,3 +82,10 @@ async def get_quiz(request: SummaryRequest):
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
   
+  
+
+  
+  
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app)
