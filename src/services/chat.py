@@ -101,5 +101,5 @@ def create_chain(vectorStore):
     return chain
 
 
-
+streaming_callback_handler = MyCustomHandler(streamer_queue)
 

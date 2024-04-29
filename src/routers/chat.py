@@ -6,14 +6,14 @@ from datetime import datetime
 from models.user import User
 from models.chat import QuestionRequest
 from services.auth import get_current_user
-from services.chat import load_docs, create_vector_store, create_chain, generate_session_id, streamer_queue
+from services.chat import load_docs, create_vector_store, create_chain, generate_session_id, streamer_queue, streaming_callback_handler
 from langchain_core.messages import HumanMessage, AIMessage
 from bson import json_util 
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
-from services.callbacks import ChainHandler    
+from services.callbacks import ChainHandler, RetrieverCallbackHandler
 import asyncio
 import os
 import asyncio
@@ -175,10 +175,10 @@ async def get_answers(request: QuestionRequest):
     chain = create_chain(db)
     chat_history = []
     
-    chain_handler = ChainHandler()
+    chain_handler = RetrieverCallbackHandler(streaming_callback_handler)
     
     def generate(question):
-        chain.invoke({"question": question, "chat_history": []})
+        chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_handler]})
 
 
     def start_generation(question):

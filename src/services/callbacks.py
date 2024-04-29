@@ -1,11 +1,12 @@
 
 from typing import Dict, List, Any
+from uuid import UUID
 from langchain.callbacks import AsyncIteratorCallbackHandler
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from typing import AsyncIterable
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import LLMResult
-
+import json
 class MyCustomHandler(BaseCallbackHandler):
     def __init__(self, queue) -> None:
         super().__init__()
@@ -48,14 +49,20 @@ class ChainHandler(BaseCallbackHandler):
         
 
 
-    class RetrieverCallbackHandler(AsyncIteratorCallbackHandler):
+class RetrieverCallbackHandler(AsyncIteratorCallbackHandler):
         def __init__(self, streaming_callback_handler) -> None:
             super().__init__()
             self.streaming_callback_handler = streaming_callback_handler
 
-        async def on_retriever_end(self, source_docs, *, run_id, parent_run_id, tags, **kwargs):
-            source_docs_d = [{"page": doc.metadata["page"]}
-                            for doc in source_docs] if source_docs else None
+        # async def on_retriever_end(self, source_docs, *, run_id, parent_run_id, tags, **kwargs):
+        #     source_docs_d = [{"page": doc.metadata["page"]}
+        #                     for doc in source_docs] if source_docs else None
 
-            xtra = {"source_documents": source_docs_d}
-            self.streaming_callback_handler.queue.put_nowait(xtra)
+        #     xtra = {"source_documents": source_docs_d}
+        #     xtra_str = json.dumps(xtra)
+        #     print("ended")
+        #     self.streaming_callback_handler._queue.put_nowait(xtra_str)
+            
+        async def on_chain_end(self, outputs: Dict[str, Any], *, run_id: UUID, parent_run_id: UUID | None = None, tags: List[str] | None = None, **kwargs: Any) -> None:
+            # print(outputs)
+            pass
