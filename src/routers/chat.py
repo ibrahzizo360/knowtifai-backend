@@ -178,7 +178,8 @@ async def get_answers(request: QuestionRequest):
     chain_handler = RetrieverCallbackHandler(streaming_callback_handler)
     
     def generate(question):
-        chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_handler]})
+        # chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_handler]})
+        chain.invoke({"question": question, "chat_history": []})
 
 
     def start_generation(question):
