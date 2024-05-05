@@ -13,11 +13,12 @@ import uuid
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks import AsyncIteratorCallbackHandler
 from services.callbacks import MyCustomHandler   
-from langchain_community.vectorstores import MongoDBAtlasVectorSearch
-from db import embeddings_collection, MONGODB_COLLECTION, ATLAS_VECTOR_SEARCH_INDEX_NAME
+from langchain_community.vectorstores.mongodb_atlas import MongoDBAtlasVectorSearch
+from db import MONGODB_COLLECTION, ATLAS_VECTOR_SEARCH_INDEX_NAME
 from queue import Queue
 
-streamer_queue = Queue()
+upload_streamer_queue = Queue()
+chat_streamer_queue = Queue()
 
 def generate_session_id():
     """
@@ -41,18 +42,17 @@ def create_vector_store(pages):
     collection=MONGODB_COLLECTION,
     index_name=ATLAS_VECTOR_SEARCH_INDEX_NAME,
 )
-
     return db
 
 
-def create_chain(vectorStore):
+def create_upload_chain(vectorStore):
     model = ChatOpenAI(
         temperature=0.4,
         model='gpt-3.5-turbo-1106'
     )
     
     prompt = ChatPromptTemplate.from_messages([
-        ("system", """Answer the user's questions based on the context: {context}. Provide citations and page references and
+        ("system", """Answer the user's questions based on the context: {context}.
          If you don't know the answer, just say that you don't know, don't try to make up an answer.
          """),
         MessagesPlaceholder(variable_name="chat_history"),
@@ -64,7 +64,7 @@ def create_chain(vectorStore):
         prompt=prompt
     )
 
-    retriever = vectorStore.as_retriever(search_kwargs={"k": 6})
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 1})
     
     retriever_prompt = ChatPromptTemplate.from_messages([
         MessagesPlaceholder(variable_name="chat_history"),
@@ -84,7 +84,7 @@ def create_chain(vectorStore):
                  callbacks=[AsyncIteratorCallbackHandler()],
                  streaming=True)
     
-    my_handler = MyCustomHandler(streamer_queue)
+    my_handler = MyCustomHandler(upload_streamer_queue)
     
     streaming_llm = ChatOpenAI(
             max_retries=15,
@@ -100,6 +100,101 @@ def create_chain(vectorStore):
 
     return chain
 
+def create_chat_chain(vectorStore):
+    model = ChatOpenAI(
+        temperature=0.4,
+        model='gpt-3.5-turbo-1106'
+    )
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """Answer the user's questions based on the context: {context}.
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}")
+    ])
 
-streaming_callback_handler = MyCustomHandler(streamer_queue)
+    document_chain = create_stuff_documents_chain(
+        llm=model,
+        prompt=prompt
+    )
+
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 3})
+    
+    retriever_prompt = ChatPromptTemplate.from_messages([
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}"),
+        ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
+    ])
+    history_aware_retriever = create_history_aware_retriever(
+        llm=model,
+        retriever=retriever,
+        prompt=retriever_prompt
+    )
+
+    retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+    
+    my_handler = MyCustomHandler(chat_streamer_queue)
+    
+    streaming_llm = ChatOpenAI(
+            max_retries=15,
+            temperature=0.3,
+            callbacks=[my_handler],
+            streaming=True,
+        )
+
+    chain = ConversationalRetrievalChain.from_llm(llm=streaming_llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True,)
+
+    return chain
+
+def create_default_chain(vectorStore):
+    model = ChatOpenAI(
+        temperature=0.4,
+        model='gpt-3.5-turbo-1106'
+    )
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """Answer the user's questions based on the context: {context}.
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}")
+    ])
+
+    document_chain = create_stuff_documents_chain(
+        llm=model,
+        prompt=prompt
+    )
+
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 3})
+    
+    retriever_prompt = ChatPromptTemplate.from_messages([
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}"),
+        ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
+    ])
+    history_aware_retriever = create_history_aware_retriever(
+        llm=model,
+        retriever=retriever,
+        prompt=retriever_prompt
+    )
+
+    retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+    
+    llm = ChatOpenAI(temperature=0.3, 
+                max_retries=3,
+                 callbacks=[AsyncIteratorCallbackHandler()],
+                 streaming=True)
+    
+    
+    chain = ConversationalRetrievalChain.from_llm(llm=llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True,)
+
+    return chain
+
+
+streaming_callback_handler = MyCustomHandler(upload_streamer_queue)
 
