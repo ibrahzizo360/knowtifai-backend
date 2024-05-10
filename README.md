@@ -67,7 +67,7 @@ Our project aims to revolutionize education by harnessing the power of artificia
 
 Of course, we keep our users nearby by analysing their activities on the platform and keeping them on track
 
-Click on https://knowtifai.vercel.app to get started
+Click on <a href="https://knowtifai.vercel.app" > KnowtifAI<a/>  to get started
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
