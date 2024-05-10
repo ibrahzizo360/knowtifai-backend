@@ -89,16 +89,22 @@ To fully use our interative AI tools, follow these guidelines;
 
 1. <a href="https://knowtifai.vercel.app/login">Sign in</a> or <a href="https://knowtifai.vercel.app/register">Sign Up</a> to get started
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/8c20e0a3-6ca7-49c7-9fb6-55da9a95ad89)
+   
+   
 
-2. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
+3. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/c0bab8d3-0b1f-4229-88a3-76873233610b)
+   
 
 
-3. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
+5. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/bce7f96a-7bb1-4dd7-b66b-be4251c0118d)
 
-4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
+   
+
+7. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/a9c1175d-9151-41dd-8688-4784f9f08ac3)
+
 
 Access the rest of the pages such as <a href="https://knowtifai.vercel.app">homepage</a>, <a href="https://knowtifai.vercel.app/more">Blog page</a>, <a href="https://knowtifai.vercel.app/about">About page</a> and others, to know more about us and the KnowtifAI vision.
 
@@ -144,8 +150,7 @@ Wonder Boakye Yiadom - [@your_twitter](https://twitter.com/your_username) - emai
 
 * [OpenAI](https://openai.com)
 * [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+* [African Technology Forum](https://www.linkedin.com/in/african-technology-forum-638bb02aa/)
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
