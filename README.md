@@ -87,6 +87,8 @@ This section highlights the major frameworks/libraries used to bootstrap Knowtif
 ## Usage
 To fully use our interative AI tools, 
 1. <a href="https://knowtifai.vercel.app/login">Sign in</a> or <a href="https://knowtifai.vercel.app/register">Sign Up</a> to get started
+   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/8c20e0a3-6ca7-49c7-9fb6-55da9a95ad89)
+
    
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
