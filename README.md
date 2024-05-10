@@ -83,11 +83,11 @@ This section highlights the major frameworks/libraries used to bootstrap Knowtif
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
+<!-- Usage -->
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+To fully use our interative AI tools, 
+1. <a href="https://knowtifai.vercel.app/login">Sign in</a> or <a href="https://knowtifai.vercel.app/register">Sign Up</a> to get started
+   
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
