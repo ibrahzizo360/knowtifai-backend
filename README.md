@@ -2,7 +2,7 @@
 <!--
 *** Thanks for checking out KnowtifAI. If you have a suggestion
 *** that would make this better, please send us a message in the app
-*** or simply connect with us on any of the social platforms
+*** or simply connect with us on any of the social media platforms
 *** Don't forget to give the project a star!
 *** Thanks again!
 -->
@@ -44,7 +44,6 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -56,7 +55,8 @@
 ## About The Project
 
 ![logg](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/f32c9b42-48eb-4787-96da-b42a3fa4f3d9)
-![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/ee41dd9c-af66-47c3-bfee-6a41e36b0a87)
+![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/6e23f0af-1dc2-4002-86e5-1f992feeeff3)
+
 
 Welcome to KnowtifAI: Empowering Education with AI!
 Our project aims to revolutionize education by harnessing the power of artificial intelligence (AI) to provide personalized, interactive learning experiences. Here's why KnowtifAI stands out:
@@ -126,7 +126,7 @@ Don't forget to give the project a star! Thanks again!
 
 
 
-<!-- CONTACT -->
+<!-- PROJECT TEAM -->
 ## Project Team
 
 Ohene-Agyekum Addo-Agyekum - [@your_twitter](https://twitter.com/your_username) - email@example.com
