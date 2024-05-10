@@ -72,7 +72,7 @@ Click on https://knowtifai.vercel.app to get started
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
-
+<!-- Built with -->
 ### Built With
 
 This section highlights the major frameworks/libraries used to bootstrap KnowtifAI. 
@@ -85,11 +85,18 @@ This section highlights the major frameworks/libraries used to bootstrap Knowtif
 
 <!-- Usage -->
 ## Usage
-To fully use our interative AI tools, 
+To fully use our interative AI tools, follow these guidelines;
+
 1. <a href="https://knowtifai.vercel.app/login">Sign in</a> or <a href="https://knowtifai.vercel.app/register">Sign Up</a> to get started
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/8c20e0a3-6ca7-49c7-9fb6-55da9a95ad89)
 
-   
+2. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
+   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/9799abc3-652e-45e9-b97b-4cae41419269)
+
+3. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
+   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/bce7f96a-7bb1-4dd7-b66b-be4251c0118d)
+
+4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, Upload a valid pdf file by drag and drop or clicking to select document from device.
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
