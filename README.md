@@ -61,7 +61,7 @@
 Welcome to KnowtifAI: Empowering Education with AI!
 Our project aims to revolutionize education by harnessing the power of artificial intelligence (AI) to provide personalized, interactive learning experiences. Here's why KnowtifAI stands out:
 
-* Get personalised explanations and become smart overnight.
+* Get personalised explanations and become smarter overnight.
 * learn and research faster and smarter.
 * helping everyone in Africa and globally to promote educational equity
 
@@ -91,12 +91,17 @@ To fully use our interative AI tools, follow these guidelines;
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/8c20e0a3-6ca7-49c7-9fb6-55da9a95ad89)
 
 2. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
-   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/9799abc3-652e-45e9-b97b-4cae41419269)
+   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/c0bab8d3-0b1f-4229-88a3-76873233610b)
+
 
 3. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/bce7f96a-7bb1-4dd7-b66b-be4251c0118d)
 
-4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, Upload a valid pdf file by drag and drop or clicking to select document from device.
+4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
+   ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/a9c1175d-9151-41dd-8688-4784f9f08ac3)
+
+Access the rest of the pages such as <a href="https://knowtifai.vercel.app">homepage</a>, <a href="https://knowtifai.vercel.app/more">Blog page</a>, <a href="https://knowtifai.vercel.app/about">About page</a> and others, to know more about us and the KnowtifAI vision.
+
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
