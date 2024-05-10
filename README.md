@@ -150,7 +150,7 @@ Wonder Boakye Yiadom - [@your_twitter](https://twitter.com/your_username) - emai
 
 * [OpenAI](https://openai.com)
 * [GitHub Pages](https://pages.github.com)
-* [African Technology Forum](https://www.linkedin.com/in/african-technology-forum-638bb02aa/)
+* [African Technology Forum](https://africantechnologyforum.org)
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
