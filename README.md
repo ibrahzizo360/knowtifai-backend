@@ -39,12 +39,13 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#getting-started-with-the-development-server">Getting started with Local Host</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#project-team">Project Team</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -70,6 +71,23 @@ Of course, we keep our users nearby by analysing their activities on the platfor
 Click on <a href="https://knowtifai.vercel.app" > KnowtifAI<a/>  to get started
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
+
+<!-- LOCAL HOST -->
+## Getting Started with the development server
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
 <!-- BUILT WITH -->
