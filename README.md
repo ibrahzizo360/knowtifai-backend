@@ -72,7 +72,7 @@ Click on https://knowtifai.vercel.app to get started
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
-<!-- Built with -->
+<!-- BUILT WITH -->
 ### Built With
 
 This section highlights the major frameworks/libraries used to bootstrap KnowtifAI. 
@@ -83,7 +83,7 @@ This section highlights the major frameworks/libraries used to bootstrap Knowtif
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
-<!-- Usage -->
+<!-- USAGE -->
 ## Usage
 To fully use our interative AI tools, follow these guidelines;
 
@@ -121,7 +121,7 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
 
@@ -147,6 +147,6 @@ Wonder Boakye Yiadom - [@your_twitter](https://twitter.com/your_username) - emai
 * [Font Awesome](https://fontawesome.com)
 * [React Icons](https://react-icons.github.io/react-icons/search)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
 
