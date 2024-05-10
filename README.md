@@ -90,19 +90,16 @@ To fully use our interative AI tools, follow these guidelines;
 1. <a href="https://knowtifai.vercel.app/login">Sign in</a> or <a href="https://knowtifai.vercel.app/register">Sign Up</a> to get started
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/8c20e0a3-6ca7-49c7-9fb6-55da9a95ad89)
    
-   
 
-3. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
+2. To access our interactive features, either use the <a href="https://knowtifai.vercel.app/features">Features</a> page or for quick access, utilise the drop-down options available.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/c0bab8d3-0b1f-4229-88a3-76873233610b)
    
 
-
-5. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
+3. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/bce7f96a-7bb1-4dd7-b66b-be4251c0118d)
 
-   
 
-7. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
+4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/a9c1175d-9151-41dd-8688-4784f9f08ac3)
 
 
@@ -135,7 +132,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- PROJECT TEAM -->
 ## Project Team
 
-Ohene-Agyekum Addo-Agyekum - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Ohene-Agyekum Addo-Agyekum - [@the_ohene](https://twitter.com/the_ohene) - oheneaddo1895@gmail.com
 
 Ibrahim Aziz - [@your_twitter](https://twitter.com/your_username) - email@example.com
 
