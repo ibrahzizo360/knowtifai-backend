@@ -132,11 +132,11 @@ Don't forget to give the project a star! Thanks again!
 <!-- PROJECT TEAM -->
 ## Project Team
 
-Ohene-Agyekum Addo-Agyekum - [@the_ohene](https://twitter.com/the_ohene) - oheneaddo1895@gmail.com
+Ohene-Agyekum Addo-Agyekum - [X](https://twitter.com/OheneTweets)     [LinkedIn](www.linkedin.com/in/ohene-agyekum)    [Email](oheneaddo1895@gmail.com)
 
-Ibrahim Aziz - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Ibrahim Aziz - [X](https://twitter.com/IbrahZizo)     [LinkedIn](https://www.linkedin.com/in/ibrah-zizo/)    [Email](ibrahziz10@gmail.com)
 
-Wonder Boakye Yiadom - [@your_twitter](https://twitter.com/your_username) - email@example.com
+Wonder Boakye Yiadom - [LinkedIn](https://www.linkedin.com/in/wonder-boakye-yiadom-08a604253//)    [Email](boakyeyiadomwonder@gmail.com)
 
 <p align="right">(<a href="#knowtifai-top">back to top</a>)</p>
 
