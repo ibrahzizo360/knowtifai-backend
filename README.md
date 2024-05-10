@@ -11,9 +11,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a
-    ![logoooo](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/94bfa535-0736-4e5b-a018-dc0a8e5d9dbc)
-
+  <a href="https://knowtifai.vercel.app">
+    <img src="logoooo.jpg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">KnowtifAI</h3>
