@@ -25,7 +25,7 @@
     <br />
     <a href="demo">View Demo</a>
     ·
-    <a href="report bug">Report Bug</a>
+    <a href="https://knowtifai.vercel.app/message">Report Bug</a>
     ·
   </p>
 </div>
