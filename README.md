@@ -20,10 +20,10 @@
   <p align="center">
     An AI-powered application that allows users to seamlessly interact with documents and video content.
     <br />
-    <a href="docs"><strong>Explore the docs »</strong></a>
+   
     <br />
     <br />
-    <a href="demo">View Demo</a>
+    <a href="demo">Watch Demo Video</a>
     ·
     <a href="https://knowtifai.vercel.app/message">Report Bug</a>
     ·
