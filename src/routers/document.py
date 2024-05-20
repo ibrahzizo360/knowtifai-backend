@@ -93,7 +93,6 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
             {"$push": {"sessions": session_id}}
         )
     
-    
         return StreamingResponse(response_generator(), media_type='text/event-stream')
         
 
@@ -103,10 +102,8 @@ async def upload_file(file: UploadFile = File(...), current_user: User = Depends
     
     
     
-    
-    
 @router.post("/v2/get_answers")
-async def get_answers(request: QuestionRequest, current_user: User = Depends(get_current_user)):
+async def get_answers(request: QuestionRequest):
     
     db = MongoDBAtlasVectorSearch.from_connection_string(
     os.getenv('MONGO_URL'),
@@ -119,11 +116,10 @@ async def get_answers(request: QuestionRequest, current_user: User = Depends(get
     
     chain = create_chat_chain(db)
     chat_history = session['chat_history']
-    print(chat_history)
     
     def generate(question):
-        response = chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_callback_handler]})
-        # chain.invoke({"question": question, "chat_history": []})
+        response = chain.invoke({"question": question, "chat_history": []})
+        # chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_callback_handler]})
         
         chat_history.append({"role": "user", "text": question})
         chat_history.append({"role": "bot", "text": response['answer']})
