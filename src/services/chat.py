@@ -12,7 +12,7 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 import uuid
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks import AsyncIteratorCallbackHandler
-from services.callbacks import MyCustomHandler   
+from services.callbacks import MyCustomHandler, RetrieverCallbackHandler
 from langchain_community.vectorstores.mongodb_atlas import MongoDBAtlasVectorSearch
 from db import MONGODB_COLLECTION, ATLAS_VECTOR_SEARCH_INDEX_NAME
 from queue import Queue
@@ -84,12 +84,10 @@ def create_upload_chain(vectorStore):
                  callbacks=[AsyncIteratorCallbackHandler()],
                  streaming=True)
     
-    my_handler = MyCustomHandler(upload_streamer_queue)
-    
     streaming_llm = ChatOpenAI(
             max_retries=15,
             temperature=0.3,
-            callbacks=[my_handler],
+            callbacks=[streaming_callback_handler_upload],
             streaming=True,
         )
     
@@ -134,12 +132,11 @@ def create_chat_chain(vectorStore):
 
     retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
     
-    my_handler = MyCustomHandler(chat_streamer_queue)
     
     streaming_llm = ChatOpenAI(
             max_retries=15,
             temperature=0.3,
-            callbacks=[my_handler],
+            callbacks=[streaming_callback_handler_chat],
             streaming=True,
         )
 
@@ -196,5 +193,7 @@ def create_default_chain(vectorStore):
     return chain
 
 
-streaming_callback_handler = MyCustomHandler(upload_streamer_queue)
+streaming_callback_handler_upload = MyCustomHandler(upload_streamer_queue)
+streaming_callback_handler_chat = MyCustomHandler(chat_streamer_queue)
+chain_callback_handler = RetrieverCallbackHandler(streaming_callback_handler_chat)   
 

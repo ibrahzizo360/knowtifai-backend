@@ -8,7 +8,8 @@ class ChatResponse(BaseModel):
     chat_completion: str   
 
 class QuestionRequest(BaseModel):
-    question: str  
+    question: str
+    session_id: str
 
 class SummaryRequest(BaseModel):
     transcript_text: str   

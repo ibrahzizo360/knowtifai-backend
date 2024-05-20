@@ -17,13 +17,14 @@ router = APIRouter()
 @router.post("/login")
 async def login_for_access_token(user: AuthUser):
     user = await authenticate_user(user.email, user.password)
+    print(user)
     if not user:
         raise HTTPException(status_code=401, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')))
     access_token = create_access_token(
         data={"sub": user['email']}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "username": user['username']}
 
 
 @router.post("/register")
