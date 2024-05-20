@@ -1,11 +1,14 @@
 import boto3
 from botocore.exceptions import ClientError
 import os
+from dotenv import load_dotenv
 
-AWS_S3_BUCKET_NAME = 'zizo123'
-AWS_REGION = 'eu-north-1'
-AWS_ACCESS_KEY = 'AKIAYS2NXG522LOCM56A'
-AWS_SECRET_KEY = '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'
+load_dotenv()
+
+AWS_S3_BUCKET_NAME = os.getenv('AWS_S3_BUCKET_NAME')
+AWS_REGION = os.getenv('AWS_REGION')
+AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY = os.getenv('AWS_SECRET_KEY')
 
 async def upload_document_to_aws(file_name, bucket = AWS_S3_BUCKET_NAME, object_name=None):
     """Upload document to an S3 bucket
