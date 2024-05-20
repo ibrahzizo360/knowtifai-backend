@@ -18,7 +18,6 @@ async def upload_document_to_aws(file_name, bucket = AWS_S3_BUCKET_NAME, object_
     :param object_name: S3 object name. If not specified then file_name is used
     :return: True if file was uploaded, else False
     """
-
     # If S3 object_name was not specified, use file_name
     if object_name is None:
         object_name = os.path.basename(file_name)
@@ -36,3 +35,4 @@ async def upload_document_to_aws(file_name, bucket = AWS_S3_BUCKET_NAME, object_
         return url
     except ClientError as e:
         print(e)
+
