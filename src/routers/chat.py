@@ -64,7 +64,7 @@ async def get_answers(request: QuestionRequest , current_user: User = Depends(ge
     
     
 @router.post("/v1/upload")
-async def upload_file(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+async def upload_file(file: UploadFile = File(...)):
     # try:
         # file_id = await save_file(file)
         temp_file_path = f"/tmp/{file.filename}"
