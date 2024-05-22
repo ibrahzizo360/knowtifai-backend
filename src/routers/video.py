@@ -19,10 +19,21 @@ import asyncio
 from threading import Thread
 from queue import Queue
 from dotenv import load_dotenv
-from db import ATLAS_VECTOR_SEARCH_INDEX_NAME,COLLECTION_NAME,DB_NAME, sessions_collection
+from db import sessions_collection
 from services.document import upload_document_to_aws
+from services.video import get_audio_path, get_transcript
+from models.video import VideoRequest
 
 
 load_dotenv()
 
 router = APIRouter()
+
+@router.post('/v1/upload_video')
+async def upload_video(request: VideoRequest):
+    session_id = generate_session_id()
+    audio_path = get_audio_path()
+    transcript = get_transcript(audio_path)
+    
+    
+    pass
