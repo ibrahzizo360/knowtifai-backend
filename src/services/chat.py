@@ -19,6 +19,7 @@ from queue import Queue
 
 upload_streamer_queue = Queue()
 chat_streamer_queue = Queue()
+video_upload_queue = Queue()
 
 def generate_session_id():
     """
@@ -193,7 +194,41 @@ def create_default_chain(vectorStore):
     return chain
 
 
+
+def create_video_upload_chain(vectorStore):
+    model = ChatOpenAI(
+        temperature=0.4,
+        model='gpt-3.5-turbo-1106'
+    )
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """Answer the user's questions based on the context: {context}.
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}")
+    ])
+
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 1})
+    
+    
+    streaming_llm = ChatOpenAI(
+            max_retries=15,
+            temperature=0.3,
+            callbacks=[video_upload_handler],
+            streaming=True,
+        )
+    
+    
+    chain = ConversationalRetrievalChain.from_llm(llm=streaming_llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True)
+
+    return chain
+
+
 streaming_callback_handler_upload = MyCustomHandler(upload_streamer_queue)
 streaming_callback_handler_chat = MyCustomHandler(chat_streamer_queue)
-chain_callback_handler = RetrieverCallbackHandler(streaming_callback_handler_chat)   
+chain_callback_handler = RetrieverCallbackHandler(streaming_callback_handler_chat)
+video_upload_handler = MyCustomHandler(video_upload_queue)
 

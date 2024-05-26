@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from utils.transcript import client, extract_audio_upload_cloudinary, cloudinary_config
 import requests
@@ -83,6 +83,15 @@ async def get_quiz(request: SummaryRequest):
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
+    
+@app.post("/file")
+async def write_file(file: UploadFile = File(...)):
+    with open("../hello_world.txt", "w") as f:
+        f.write("hello world")
+        
+    return {"file": file.filename}
+
+
   
   
 

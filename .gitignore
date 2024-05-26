@@ -1,4 +1,6 @@
 la-venv
+transcripts
+virtual-env
 .env
 __pycache__
 ```

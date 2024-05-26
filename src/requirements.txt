@@ -48,3 +48,4 @@ langchain-openai
 langchain
 boto3
 yt_dlp
+langchain-chroma
