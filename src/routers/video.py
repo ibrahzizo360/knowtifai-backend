@@ -89,7 +89,6 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
     async def response_generator():
         start_generation()
         yield str({"session_id": session_id})
-        yield str({"transcript": segments})
 
         # Starting an infinite loop
         while True:
@@ -112,3 +111,10 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
     )
     
     return StreamingResponse(response_generator(), media_type='text/event-stream')
+
+
+
+@router.post('/transcript')
+async def get_transcript(request: VideoRequest):
+    transcript = await get_transcript(request.video_url)
+    return transcript

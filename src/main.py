@@ -34,27 +34,27 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/transcript")
-async def get_transcript(video_url: str) -> dict:
-    try:
-        audio_file_link =  extract_audio_upload_cloudinary(video_url, cloudinary_config)
-        os.makedirs("/tmp", exist_ok=True)
-        fname_local = f"/tmp/{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
-        with requests.get(audio_file_link, stream=True) as r:
-            with open(fname_local,"wb") as binary_file:
-                binary_file.write(r.raw.read())
+# @app.get("/transcript")
+# async def get_transcript(video_url: str) -> dict:
+#     try:
+#         audio_file_link =  extract_audio_upload_cloudinary(video_url, cloudinary_config)
+#         os.makedirs("/tmp", exist_ok=True)
+#         fname_local = f"/tmp/{datetime.now().strftime('%Y%m%d%H%M%S')}.mp4"
+#         with requests.get(audio_file_link, stream=True) as r:
+#             with open(fname_local,"wb") as binary_file:
+#                 binary_file.write(r.raw.read())
                 
-                file_data = open(fname_local,'rb')
-                transcript = client.audio.transcriptions.create(
-                    file=file_data,
-                    model="whisper-1",
-                    response_format="verbose_json",
-                    timestamp_granularities=["word"]
-                )
-                return {"response": transcript}
-    except Exception as e:
-        print(e)
-        raise HTTPException(status_code=500, detail="Internal server error")
+#                 file_data = open(fname_local,'rb')
+#                 transcript = client.audio.transcriptions.create(
+#                     file=file_data,
+#                     model="whisper-1",
+#                     response_format="verbose_json",
+#                     timestamp_granularities=["word"]
+#                 )
+#                 return {"response": transcript}
+#     except Exception as e:
+#         print(e)
+#         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/chat")
 async def chat(request: ChatRequest):
@@ -84,18 +84,9 @@ async def get_quiz(request: SummaryRequest):
         print(e)
         raise HTTPException(status_code=500, detail="Internal server error, failed to generate summary.")
     
-@app.post("/file")
-async def write_file(file: UploadFile = File(...)):
-    with open("../hello_world.txt", "w") as f:
-        f.write("hello world")
-        
-    return {"file": file.filename}
 
 
-  
-  
 
-  
   
 if __name__ == "__main__":
     import uvicorn
