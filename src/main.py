@@ -7,7 +7,7 @@ import os
 from models.chat import ChatRequest, ChatResponse, SummaryRequest
 from utils.chat import generate_answer,generate_summary,generate_quiz
 import tempfile
-from routers import chat, auth, document
+from routers import chat, auth, document, video
 
 
 origins = [
@@ -20,6 +20,7 @@ app = FastAPI()
 app.include_router(chat.router)
 app.include_router(auth.router)
 app.include_router(document.router)
+app.include_router(video.router)
 
 app.add_middleware(
     CORSMiddleware,

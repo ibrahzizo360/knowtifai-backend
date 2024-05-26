@@ -21,10 +21,9 @@ from queue import Queue
 from dotenv import load_dotenv
 from db import sessions_collection
 from services.document import upload_document_to_aws
-from services.video import get_audio_path, get_transcript
+from services.video import get_transcript, get_transcript, upload_transcript_to_aws
 from models.video import VideoRequest
-
-
+ 
 load_dotenv()
 
 router = APIRouter()
@@ -32,8 +31,13 @@ router = APIRouter()
 @router.post('/v1/upload_video')
 async def upload_video(request: VideoRequest):
     session_id = generate_session_id()
-    audio_path = get_audio_path()
-    transcript = get_transcript(audio_path)
+    transcript = await get_transcript(request.video_url)
+    transcript_file_path = f"/tmp/{session_id}.txt"
     
-    
-    pass
+    with open(transcript_file_path, 'w') as file:
+            file.write(transcript)      
+            
+    file_url = await upload_transcript_to_aws(transcript_file_path)
+
+    print(f"Transcript saved to {transcript_file_path}")
+    return transcript['segments']
