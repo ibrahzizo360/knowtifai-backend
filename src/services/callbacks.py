@@ -7,6 +7,12 @@ from typing import AsyncIterable
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import LLMResult
 import json
+from queue import Queue
+
+upload_streamer_queue = Queue()
+chat_streamer_queue = Queue()
+video_upload_queue = Queue()
+video_streamer_queue = Queue()
 
 
 class RetrieverCallbackHandler(AsyncIteratorCallbackHandler):
@@ -40,3 +46,13 @@ class MyCustomHandler(BaseCallbackHandler):
         self._queue.put(self._stop_signal)
 
 
+# Document upload
+streaming_callback_handler_upload = MyCustomHandler(upload_streamer_queue)
+streaming_callback_handler_chat = MyCustomHandler(chat_streamer_queue)
+
+
+chain_callback_handler = RetrieverCallbackHandler(streaming_callback_handler_chat)
+
+# Video upload
+video_upload_handler = MyCustomHandler(video_upload_queue)
+streaming_callback_handler_video = MyCustomHandler(video_streamer_queue)

@@ -6,14 +6,14 @@ from datetime import datetime
 from models.user import User
 from models.chat import QuestionRequest
 from services.auth import get_current_user
-from services.chat import load_docs, create_vector_store, create_chat_chain, create_default_chain,create_upload_chain, generate_session_id, upload_streamer_queue,chat_streamer_queue,chain_callback_handler
+from services.chat import load_docs, create_vector_store, create_chat_chain, create_default_chain,create_upload_chain, generate_session_id
 from langchain_core.messages import HumanMessage, AIMessage
 from bson import json_util 
 from langchain_community.vectorstores.mongodb_atlas import MongoDBAtlasVectorSearch
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
-from services.callbacks import RetrieverCallbackHandler
+from services.callbacks import upload_streamer_queue,chat_streamer_queue,chain_callback_handler
 import asyncio
 import os
 import asyncio
