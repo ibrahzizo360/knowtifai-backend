@@ -209,7 +209,7 @@ async def get_session_info(current_user: User = Depends(get_current_user)):
     user = await users_collection.find_one({"username": current_user['username']})
     
     if not user or 'sessions' not in user:
-        return {"error": "User or sessions not found"}
+        return []
 
     user_session_ids = user['sessions']
     
@@ -221,4 +221,3 @@ async def get_session_info(current_user: User = Depends(get_current_user)):
     
     # else:
     #     raise HTTPException(status_code=400, detail="Session not found")
-     
