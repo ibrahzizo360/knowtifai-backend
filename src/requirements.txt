@@ -46,3 +46,6 @@ langchain_community
 langchain-text-splitters
 langchain-openai
 langchain
+boto3
+yt_dlp
+langchain-chroma

@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from typing import Optional
+
 
 class ChatRequest(BaseModel):
     question: str
@@ -8,7 +10,8 @@ class ChatResponse(BaseModel):
     chat_completion: str   
 
 class QuestionRequest(BaseModel):
-    question: str  
+    question: str
+    session_id: Optional[str] = None
 
 class SummaryRequest(BaseModel):
     transcript_text: str   

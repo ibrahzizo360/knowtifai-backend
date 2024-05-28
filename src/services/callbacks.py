@@ -7,62 +7,52 @@ from typing import AsyncIterable
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.schema import LLMResult
 import json
-class MyCustomHandler(BaseCallbackHandler):
-    def __init__(self, queue) -> None:
-        super().__init__()
-        # we will be providing the streamer queue as an input
-        self._queue = queue
-        # defining the stop signal that needs to be added to the queue in
-        # case of the last token
-        self._stop_signal = None
-    
-    # On the arrival of the new token, we are adding the new token in the 
-    # queue
-    def on_llm_new_token(self, token, **kwargs) -> None:
-        self._queue.put(token)
+from queue import Queue
 
-    # on the start or initialization, we just print or log a starting message
-    def on_llm_start(
-        self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any
-    ) -> None:
-        pass
-
-    # On receiving the last token, we add the stop signal, which determines
-    # the end of the generation
-    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
-        """Run when LLM ends running."""
-        self._queue.put(self._stop_signal)
-        
-        
-        
-        
-        
-class ChainHandler(BaseCallbackHandler):
-    def __init__(self) -> None:
-        super().__init__()
-        self._stop_signal = None
-        
-    def on_chain_end(self, outputs: Dict[str, Any], **kwargs: Any) -> Any:
-        """Run when chain ends running."""
-        # print(outputs)
-        
-        
+upload_streamer_queue = Queue()
+chat_streamer_queue = Queue()
+video_upload_queue = Queue()
+video_streamer_queue = Queue()
 
 
 class RetrieverCallbackHandler(AsyncIteratorCallbackHandler):
-        def __init__(self, streaming_callback_handler) -> None:
-            super().__init__()
-            self.streaming_callback_handler = streaming_callback_handler
+    def __init__(self, streaming_callback_handler) -> None:
+        super().__init__()
+        self.streaming_callback_handler = streaming_callback_handler
+        self._stop_signal = None
 
-        # async def on_retriever_end(self, source_docs, *, run_id, parent_run_id, tags, **kwargs):
-        #     source_docs_d = [{"page": doc.metadata["page"]}
-        #                     for doc in source_docs] if source_docs else None
+    async def on_retriever_end(self, source_docs, *, run_id, parent_run_id, tags, **kwargs):
+        source_docs_d = [{"page": doc.metadata["page"]} for doc in source_docs] if source_docs else None
+        xtra = {"source_documents": source_docs_d}
+        print(xtra)
+        self.streaming_callback_handler._queue.put(xtra)
 
-        #     xtra = {"source_documents": source_docs_d}
-        #     xtra_str = json.dumps(xtra)
-        #     print("ended")
-        #     self.streaming_callback_handler._queue.put_nowait(xtra_str)
-            
-        async def on_chain_end(self, outputs: Dict[str, Any], *, run_id: UUID, parent_run_id: UUID | None = None, tags: List[str] | None = None, **kwargs: Any) -> None:
-            # print(outputs)
-            pass
+    async def on_chain_end(self, outputs: Dict[str, Any], *, run_id: UUID, parent_run_id: UUID | None = None, tags: List[str] | None = None, **kwargs: Any) -> None:
+        pass
+
+class MyCustomHandler(BaseCallbackHandler):
+    def __init__(self, queue) -> None:
+        super().__init__()
+        self._queue = queue
+        self._stop_signal = None
+
+    def on_llm_new_token(self, token, **kwargs) -> None:
+        self._queue.put({'text': token})
+
+    def on_llm_start(self, serialized: Dict[str, Any], prompts: List[str], **kwargs: Any) -> None:
+        pass
+
+    def on_llm_end(self, response: LLMResult, **kwargs: Any) -> None:
+        self._queue.put(self._stop_signal)
+
+
+# Document upload
+streaming_callback_handler_upload = MyCustomHandler(upload_streamer_queue)
+streaming_callback_handler_chat = MyCustomHandler(chat_streamer_queue)
+
+
+chain_callback_handler = RetrieverCallbackHandler(streaming_callback_handler_chat)
+
+# Video upload
+video_upload_handler = MyCustomHandler(video_upload_queue)
+streaming_callback_handler_video = MyCustomHandler(video_streamer_queue)

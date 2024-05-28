@@ -12,13 +12,9 @@ from langchain.chains.history_aware_retriever import create_history_aware_retrie
 import uuid
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks import AsyncIteratorCallbackHandler
-from services.callbacks import MyCustomHandler   
+from services.callbacks import streaming_callback_handler_upload, streaming_callback_handler_chat, video_upload_handler, video_upload_handler,streaming_callback_handler_video
 from langchain_community.vectorstores.mongodb_atlas import MongoDBAtlasVectorSearch
 from db import MONGODB_COLLECTION, ATLAS_VECTOR_SEARCH_INDEX_NAME
-from queue import Queue
-
-upload_streamer_queue = Queue()
-chat_streamer_queue = Queue()
 
 def generate_session_id():
     """
@@ -84,12 +80,10 @@ def create_upload_chain(vectorStore):
                  callbacks=[AsyncIteratorCallbackHandler()],
                  streaming=True)
     
-    my_handler = MyCustomHandler(upload_streamer_queue)
-    
     streaming_llm = ChatOpenAI(
             max_retries=15,
             temperature=0.3,
-            callbacks=[my_handler],
+            callbacks=[streaming_callback_handler_upload],
             streaming=True,
         )
     
@@ -134,12 +128,11 @@ def create_chat_chain(vectorStore):
 
     retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
     
-    my_handler = MyCustomHandler(chat_streamer_queue)
     
     streaming_llm = ChatOpenAI(
             max_retries=15,
             temperature=0.3,
-            callbacks=[my_handler],
+            callbacks=[streaming_callback_handler_chat],
             streaming=True,
         )
 
@@ -196,5 +189,84 @@ def create_default_chain(vectorStore):
     return chain
 
 
-streaming_callback_handler = MyCustomHandler(upload_streamer_queue)
+
+def create_video_upload_chain(vectorStore):
+    model = ChatOpenAI(
+        temperature=0.4,
+        model='gpt-3.5-turbo-1106'
+    )
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """Answer the user's questions based on the context: {context}.
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}")
+    ])
+
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 1})
+    
+    
+    streaming_llm = ChatOpenAI(
+            max_retries=15,
+            temperature=0.3,
+            callbacks=[video_upload_handler],
+            streaming=True,
+        )
+    
+    
+    chain = ConversationalRetrievalChain.from_llm(llm=streaming_llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True)
+
+    return chain
+
+
+def create_video_chain(vectorStore):
+    model = ChatOpenAI(
+        temperature=0.4,
+        model='gpt-3.5-turbo-1106'
+    )
+    
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """Answer the user's questions based on the context: {context}.
+         If you don't know the answer, just say that you don't know, don't try to make up an answer.
+         """),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}")
+    ])
+
+    document_chain = create_stuff_documents_chain(
+        llm=model,
+        prompt=prompt
+    )
+
+    retriever = vectorStore.as_retriever(search_kwargs={"k": 3})
+    
+    retriever_prompt = ChatPromptTemplate.from_messages([
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("user", "{input}"),
+        ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
+    ])
+    
+    history_aware_retriever = create_history_aware_retriever(
+        llm=model,
+        retriever=retriever,
+        prompt=retriever_prompt
+    )
+
+    retrieval_chain = create_retrieval_chain(history_aware_retriever, document_chain)
+    
+    streaming_llm = ChatOpenAI(
+            max_retries=15,
+            temperature=0.3,
+            callbacks=[streaming_callback_handler_video],
+            streaming=True,
+        )
+
+    chain = ConversationalRetrievalChain.from_llm(llm=streaming_llm, 
+                                                  retriever=retriever,
+                                                  return_source_documents=True,)
+
+    return chain
 

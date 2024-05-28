@@ -1,26 +1,26 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from services.assistant import AssistantManager
-from db import users_collection, files_collection
+from db import users_collection
 from bson.binary import Binary
 from datetime import datetime
 from models.user import User
 from models.chat import QuestionRequest
 from services.auth import get_current_user
-from services.chat import load_docs, create_vector_store, create_chat_chain, create_default_chain,create_upload_chain, generate_session_id, upload_streamer_queue,chat_streamer_queue, streaming_callback_handler
+from services.chat import load_docs, create_vector_store, create_chat_chain, create_default_chain,create_upload_chain, generate_session_id
 from langchain_core.messages import HumanMessage, AIMessage
 from bson import json_util 
 from langchain_community.vectorstores.mongodb_atlas import MongoDBAtlasVectorSearch
 from langchain_openai import OpenAIEmbeddings
 from dotenv import load_dotenv
 from fastapi.responses import StreamingResponse
-from services.callbacks import ChainHandler, RetrieverCallbackHandler
+from services.callbacks import upload_streamer_queue,chat_streamer_queue,chain_callback_handler
 import asyncio
 import os
 import asyncio
 from threading import Thread
 from queue import Queue
 from dotenv import load_dotenv
-from db import ATLAS_VECTOR_SEARCH_INDEX_NAME,COLLECTION_NAME,DB_NAME
+from db import sessions_collection
 
 
 load_dotenv()
@@ -28,13 +28,6 @@ load_dotenv()
 
 router = APIRouter()
 assistant_manager = AssistantManager()
-    
-
-async def save_file(file: UploadFile) -> str:
-    contents = await file.read()
-    file_data = Binary(contents)
-    saved_file = await files_collection.insert_one({"file_data": file_data, "uploaded_at": datetime.now()})
-    return str(saved_file.inserted_id)
 
 @router.post("/upload")
 async def upload_file(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
@@ -71,7 +64,7 @@ async def get_answers(request: QuestionRequest , current_user: User = Depends(ge
     
     
 @router.post("/v1/upload")
-async def upload_file(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
+async def upload_file(file: UploadFile = File(...)):
     # try:
         # file_id = await save_file(file)
         temp_file_path = f"/tmp/{file.filename}"
@@ -200,52 +193,32 @@ async def get_answers(request: QuestionRequest , current_user: User = Depends(ge
     }
 
 
+@router.get("/get_session/{session_id}")
+async def get_session_info(session_id, current_user: User = Depends(get_current_user)):
+    user = await users_collection.find_one({"username": current_user['username']})
+    user_sessions = user['sessions']
+    if session_id in user_sessions:
+        session = await sessions_collection.find_one({"session_id": session_id}, {'_id': 0, 'user_id': 0})
+        return session
+    else:
+        raise HTTPException(status_code=400, detail="Session not found")
 
 
-@router.post("/v2/get_answers")
-async def get_answers(request: QuestionRequest):
+@router.get("/get_user_sessions")
+async def get_session_info(current_user: User = Depends(get_current_user)):
+    user = await users_collection.find_one({"username": current_user['username']})
     
-    db = MongoDBAtlasVectorSearch.from_connection_string(
-    os.getenv('MONGO_URL'),
-    DB_NAME + '.' + COLLECTION_NAME,
-    OpenAIEmbeddings(disallowed_special=()),
-    index_name='vector_index',
-    
-    )
-    
-    chain = create_chat_chain(db)
-    chat_history = []
-    
-    # chain_handler = RetrieverCallbackHandler(streaming_callback_handler)
-    
-    def generate(question):
-        # chain.invoke({"question": question, "chat_history": []},{"callbacks":[chain_handler]})
-        chain.invoke({"question": question, "chat_history": []})
+    if not user or 'sessions' not in user:
+        return {"error": "User or sessions not found"}
 
-
-    def start_generation(question):
-        # Creating a thread with generate function as a target
-        thread = Thread(target=generate, kwargs={"question": question})
-        # Starting the thread
-        thread.start()
-        
-    async def response_generator(query):
-        start_generation(query)
-
-        # Starting an infinite loop
-        while True:
-            # Obtain the value from the streamer queue
-            value = chat_streamer_queue.get()
-            # Check for the stop signal, which is None in our case
-            if value == None:
-                # If stop signal is found break the loop
-                break
-            # Else yield the value
-            yield value
-            # statement to signal the queue that task is done
-            chat_streamer_queue.task_done()
-
-            await asyncio.sleep(0.1)
+    user_session_ids = user['sessions']
     
-    return StreamingResponse(response_generator(request.question), media_type='text/event-stream')
+    # Assuming session IDs are stored as ObjectIds
+    sessions = await sessions_collection.find({"session_id": {"$in": user_session_ids}}, {'_id': 0,'user_id': 0}).to_list(length=None)
 
+    return sessions
+    
+    
+    # else:
+    #     raise HTTPException(status_code=400, detail="Session not found")
+     
