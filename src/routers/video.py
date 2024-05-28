@@ -33,7 +33,7 @@ router = APIRouter()
 @router.post('/v1/upload_video')
 async def upload_video(request: VideoRequest, current_user: User = Depends(get_current_user)):
     session_id = generate_session_id()
-    transcript = await get_transcript(request.video_url)
+    # transcript = await get_transcript(request.video_url)
     
     if not os.path.exists("../data/transcripts"):
         os.makedirs("../data/transcripts")
@@ -41,7 +41,7 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
     
     transcript_file_path = f"../data/transcripts/{session_id}.txt"
     
-    segments = transcript.segments
+    segments = request.transcript
     
     with open(transcript_file_path, 'w') as file:
         for segment in segments:
@@ -75,7 +75,7 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
         
         sessions_collection.insert_one(
         {"session_id": session_id, "chat_history": chat_history,
-        "type": "video", "name": request.title,
+        "type": "video", "name": request.title, "video_url": request.video_url,
         "transcript": segments, "user_id": current_user['_id']}
         )
            
@@ -113,8 +113,8 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
     return StreamingResponse(response_generator(), media_type='text/event-stream')
 
 
-
 @router.post('/transcript')
-async def get_transcript(request: VideoRequest):
+async def get_transcript_segments(request: VideoRequest):
     transcript = await get_transcript(request.video_url)
-    return transcript
+    print(transcript.segments)
+    return {"transcript": transcript.segments}
