@@ -43,7 +43,6 @@ async def upload_video(request: VideoRequest, current_user: User = Depends(get_c
         
     if not os.path.exists("../data/transcripts"):
         os.makedirs("../data/transcripts")
-        print(f"Directory '{"transcripts"}' created.")
     
     transcript_file_path = f"../data/transcripts/{session_id}.txt"
     

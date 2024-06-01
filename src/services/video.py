@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import cloudinary
 import cloudinary.uploader
+from pytube import YouTube
 import cloudinary.api
 import pytube
 from datetime import datetime
@@ -17,19 +18,15 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 async def get_transcript(url: str):
     try:
-        # Use yt-dlp to download only the audio stream
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': '/tmp/%(title)s.%(ext)s',
-            'postprocessors': [{
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }],
-        }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(url, download=True)
-            audio_file_path = ydl.prepare_filename(info_dict).replace('.webm', '.mp3')
+            
+        audio_stream = pytube.YouTube(url).streams.filter(only_audio=True).first()
+
+        # Generate a unique filename with timestamp
+        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}"
+
+        audio_stream.download(filename=filename, output_path='/tmp/')
+
+        audio_file_path = '/tmp/' + filename
             
         with open(audio_file_path, 'rb') as audio_file:
             audio_data = audio_file.read()
