@@ -114,12 +114,12 @@ To fully use our interative AI tools, follow these guidelines;
    ![image](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/c0bab8d3-0b1f-4229-88a3-76873233610b)
    
 
-3. To utilise the <a href="https://knowtifai.vercel.app/video">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
+3. To utilise the <a href="https://knowtifai.vercel.app/media">youtube video content interactivity</a>, enter your preferred youtube URL and click "Start Learning" to get started.
    ![vidSide](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/83f6b261-5bae-494f-9c81-33a0f9f7694b)
 
 
 
-4. To utilise the <a href="https://knowtifai.vercel.app/slide">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
+4. To utilise the <a href="https://knowtifai.vercel.app/document">document interactivity</a> feature, upload a valid pdf file by drag and drop or clicking to select document from device.
    ![docSide](https://github.com/ibrahzizo360/knowtifai-backend/assets/168821380/5247c783-4996-4ef9-b30e-0e72e142be96)
 
 
